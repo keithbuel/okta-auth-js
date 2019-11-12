@@ -32,7 +32,8 @@ const Footer = `
 
 const Layout = `
   <div id="layout">
-    <div id="token-error" style="color: red"></div>
+    <div id="sdk-error" style="color: red"></div>
+    <div id="session-ended" style="color: orange"></div>
     <div id="page-content"></div>
     <div id="config-area" class="flex-row">
       <div id="form-content" class="box">${Form}</div>
@@ -56,6 +57,9 @@ function bindFunctions(testApp, window) {
 
 function TestApp(config) {
   this.config = config;
+  Object.assign(this.config, {
+    onSessionEnd: this._onSessionEnd.bind(this)
+  });
 }
 
 export default TestApp;
@@ -75,7 +79,7 @@ Object.assign(TestApp.prototype, {
     return Promise.resolve()
       .then(() => {
         this.oktaAuth = this.oktaAuth || new OktaAuth(this.config); // can throw
-        this.oktaAuth.tokenManager.on('error', this._onTokenError.bind(this));
+        this.oktaAuth.on('error', this._onSdkError.bind(this));
       });
   },
   _setContent: function(content) {
@@ -89,8 +93,11 @@ Object.assign(TestApp.prototype, {
       this.rootElem.classList.add(extraClass);
     }
   },
-  _onTokenError: function(error) {
-    document.getElementById('token-error').innerText = error;
+  _onSdkError: function(error) {
+    document.getElementById('sdk-error').innerText = error;
+  },
+  _onSessionEnd: function() {
+    document.getElementById('session-ended').innerText = 'SESSION ENDED';
   },
   bootstrapCallback: async function() {
     const content = `

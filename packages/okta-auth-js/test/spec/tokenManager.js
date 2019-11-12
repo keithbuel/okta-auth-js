@@ -4,6 +4,7 @@ allSettled.shim(); // will be a no-op if not needed
 var promiseFinally = require('promise.prototype.finally');
 promiseFinally.shim(); // will be a no-op if not needed
 
+var Emitter = require('tiny-emitter');
 var OktaAuth = require('OktaAuth');
 var tokens = require('@okta/test.support/tokens');
 var util = require('@okta/test.support/util');
@@ -36,7 +37,21 @@ describe('TokenManager', function() {
   afterEach(function() {
     jest.useRealTimers();
   });
-  
+
+  describe('event emitter', function() {
+    it('shares an emitter with the main SDK client', function() {
+      jest.spyOn(Emitter.prototype, 'on');
+      jest.spyOn(OktaAuth.prototype, '_onTokenManagerError');
+      var client = setupSync();
+      var handlerFn = jest.fn();
+      client.tokenManager.on('fake', handlerFn);
+      var emitter = Emitter.prototype.on.mock.instances[0];
+      expect(emitter).toBe(client.emitter);
+      emitter.emit('fake');
+      expect(handlerFn).toHaveBeenCalled();
+    });
+  });
+
   describe('storageKey', function() {
     it('Uses "okta-token-storage" by default', function() {
       var client = setupSync();

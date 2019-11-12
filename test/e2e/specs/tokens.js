@@ -46,7 +46,7 @@ describe('E2E token flows', () => {
 
       it('Can receive an error on token renew if user has signed out from Okta page', async () => {
         await loginPopup(flow);
-        let tokenError = await TestApp.tokenError.then(el => el.getText());
+        let tokenError = await TestApp.sdkError.then(el => el.getText());
         assert(tokenError.trim() === '');
         await openOktaHome();
         await OktaHome.signOut();
@@ -54,11 +54,14 @@ describe('E2E token flows', () => {
         await switchToMainWindow();
         await TestApp.renewToken();
         await browser.waitUntil(async () => {
-          const txt = await TestApp.tokenError.then(el => el.getText());
+          const txt = await TestApp.sdkError.then(el => el.getText());
           return txt !== tokenError;
         }, 10000, 'wait for token error');
-        await TestApp.tokenError.then(el => el.getText()).then(msg => {
+        await TestApp.sdkError.then(el => el.getText()).then(msg => {
           assert(msg.trim() === 'OAuthError: The client specified not to prompt, but the user is not logged in.');
+        });
+        await TestApp.sessionEnded.then(el => el.getText()).then(txt => {
+          assert(txt === 'SESSION ENDED');
         });
         await browser.refresh();
         await TestApp.waitForLoginBtn(); // assert we are logged out
