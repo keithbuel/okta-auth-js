@@ -202,6 +202,7 @@ tokenManager: {
 | `ignoreSignature` | ID token signatures are validated by default when `token.getWithoutPrompt`, `token.getWithPopup`,  `token.getWithRedirect`, and `token.verify` are called. To disable ID token signature validation for these methods, set this value to `true`. |
 | | This option should be used only for browser support and testing purposes. |
 | `maxClockSkew` | Defaults to 300 (five minutes). This is the maximum difference allowed between a client's clock and Okta's, in seconds, when validating tokens. Setting this to 0 is not recommended, because it increases the likelihood that valid tokens will fail validation.
+| `onSessionEnd` | A function which will be called if it is detected that the current authenticated session is invalid. A typical handler would initiate a login flow.
 | `tokenManager` | *(optional)*: An object containing additional properties used to configure the internal token manager. |
 
 * `autoRenew`:
@@ -323,6 +324,8 @@ var config = {
 
 ## API Reference
 
+* [on](#onevent-callback-context)
+* [off](#offevent-callback)
 * [signIn](#signinoptions)
 * [signOut](#signout)
 * [forgotPassword](#forgotpasswordoptions)
@@ -364,10 +367,55 @@ var config = {
   * [tokenManager.remove](#tokenmanagerremovekey)
   * [tokenManager.clear](#tokenmanagerclear)
   * [tokenManager.renew](#tokenmanagerrenewkey)
-  * [tokenManager.on](#tokenmanageronevent-callback-context)
-  * [tokenManager.off](#tokenmanageroffevent-callback)
 
 ------
+
+### `on(event, callback[, context])`
+
+Subscribe to an event. Possible events are `expired`, `error`, and `renewed`.
+
+* `event` - Event to subscribe to.
+* `callback` - Function to call when the event is triggered
+* `context` - Optional context to bind the callback to
+
+```javascript
+// Triggered when the token has expired
+authClient.on('expired', function (key, expiredToken) {
+  console.log('Token with key', key, ' has expired:');
+  console.log(expiredToken);
+});
+
+authClient.on('renewed', function (key, newToken, oldToken) {
+  console.log('Token with key', key, 'has been renewed');
+  console.log('Old token:', oldToken);
+  console.log('New token:', newToken);
+});
+
+// Triggered when an OAuthError is returned via the API
+authClient.on('error', function (err) {
+  console.log('SDK error:', err);
+  // err.name
+  // err.message
+  // err.errorCode
+  // err.errorSummary
+
+  if (err.errorCode === 'login_required') {
+    // Session was ended. Return to unauthenticated state
+  }
+});
+```
+
+### `off(event[, callback])`
+
+Unsubscribe from events. If no callback is provided, unsubscribes all listeners from the event.
+
+* `event` - Event to unsubscribe from
+* `callback` - Optional callback that was used to subscribe to the event
+
+```javascript
+authClient.off('renewed');
+authClient.off('renewed', myRenewedCallback);
+```
 
 ### `signIn(options)`
 
@@ -1681,57 +1729,10 @@ authClient.tokenManager.renew('idToken')
 });
 
 // Alternatively, you can subscribe to the 'renewed' event:
-authClient.tokenManager.on('renewed', function (key, newToken, oldToken) {
+authClient.on('renewed', function (key, newToken, oldToken) {
   console.log(newToken);
 });
 authClient.tokenManager.renew('idToken');
-```
-
-#### `tokenManager.on(event, callback[, context])`
-
-Subscribe to an event published by the `tokenManager`.
-
-* `event` - Event to subscribe to. Possible events are `expired`, `error`, and `renewed`.
-* `callback` - Function to call when the event is triggered
-* `context` - Optional context to bind the callback to
-
-```javascript
-// Triggered when the token has expired
-authClient.tokenManager.on('expired', function (key, expiredToken) {
-  console.log('Token with key', key, ' has expired:');
-  console.log(expiredToken);
-});
-
-authClient.tokenManager.on('renewed', function (key, newToken, oldToken) {
-  console.log('Token with key', key, 'has been renewed');
-  console.log('Old token:', oldToken);
-  console.log('New token:', newToken);
-});
-
-// Triggered when an OAuthError is returned via the API
-authClient.tokenManager.on('error', function (err) {
-  console.log('TokenManager error:', err);
-  // err.name
-  // err.message
-  // err.errorCode
-  // err.errorSummary
-
-  if (err.errorCode === 'login_required') {
-    // Return to unauthenticated state
-  }
-});
-```
-
-#### `tokenManager.off(event[, callback])`
-
-Unsubscribe from `tokenManager` events. If no callback is provided, unsubscribes all listeners from the event.
-
-* `event` - Event to unsubscribe from
-* `callback` - Optional callback that was used to subscribe to the event
-
-```javascript
-authClient.tokenManager.off('renewed');
-authClient.tokenManager.off('renewed', myRenewedCallback);
 ```
 
 ## Node JS Usage
