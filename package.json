@@ -2,7 +2,7 @@
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-env": "^7.7.4",
     "@babel/register": "^7.6.2",
     "dotenv": "^8.1.0",
     "eslint-plugin-jasmine": "^2.10.1",
