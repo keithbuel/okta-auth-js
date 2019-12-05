@@ -1,48 +1,57 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getDefaultConfig = getDefaultConfig;
+exports.getConfigFromUrl = getConfigFromUrl;
+exports.saveConfigToStorage = saveConfigToStorage;
+exports.getConfigFromStorage = getConfigFromStorage;
+exports.clearStorage = clearStorage;
+
+var _constants = require("./constants");
+
 /* global window, URL, localStorage, process */
-import { CALLBACK_PATH, STORAGE_KEY } from './constants';
-const HOST = window.location.host;
-const REDIRECT_URI = 'http://' + HOST + CALLBACK_PATH;
+var HOST = window.location.host;
+var REDIRECT_URI = 'http://' + HOST + _constants.CALLBACK_PATH;
 
 function getDefaultConfig() {
-  const ISSUER = process.env.ISSUER;
-  const CLIENT_ID = process.env.CLIENT_ID;
-  
+  var ISSUER = process.env.ISSUER;
+  var CLIENT_ID = process.env.CLIENT_ID;
   return {
     redirectUri: REDIRECT_URI,
     issuer: ISSUER,
     clientId: CLIENT_ID,
-    pkce: true,
+    pkce: true
   };
 }
 
 function getConfigFromUrl() {
-  const url = new URL(window.location.href);
-  const issuer = url.searchParams.get('issuer');
-  const clientId = url.searchParams.get('clientId');
-  const pkce = url.searchParams.get('pkce') && url.searchParams.get('pkce') !== 'false';
-  const scopes = (url.searchParams.get('scopes') || 'openid,email').split(',');
-  const responseType = (url.searchParams.get('responseType') || 'id_token,token').split(',');
+  var url = new URL(window.location.href);
+  var issuer = url.searchParams.get('issuer');
+  var clientId = url.searchParams.get('clientId');
+  var pkce = url.searchParams.get('pkce') && url.searchParams.get('pkce') !== 'false';
+  var scopes = (url.searchParams.get('scopes') || 'openid,email').split(',');
+  var responseType = (url.searchParams.get('responseType') || 'id_token,token').split(',');
   return {
     redirectUri: REDIRECT_URI,
-    issuer,
-    clientId,
-    pkce,
-    scopes,
-    responseType,
+    issuer: issuer,
+    clientId: clientId,
+    pkce: pkce,
+    scopes: scopes,
+    responseType: responseType
   };
 }
 
 function saveConfigToStorage(config) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  localStorage.setItem(_constants.STORAGE_KEY, JSON.stringify(config));
 }
 
 function getConfigFromStorage() {
-  const config = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  var config = JSON.parse(localStorage.getItem(_constants.STORAGE_KEY));
   return config;
 }
 
 function clearStorage() {
-  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(_constants.STORAGE_KEY);
 }
-
-export { getDefaultConfig, getConfigFromUrl, saveConfigToStorage, getConfigFromStorage, clearStorage };
