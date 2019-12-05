@@ -1,52 +1,34 @@
-import { htmlString } from './util';
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tokensArrayToObject = tokensArrayToObject;
+exports.tokensHTML = tokensHTML;
+
+var _util = require("./util");
 
 function tokensArrayToObject(tokens) {
-  let accessToken = tokens.filter(token => {
+  var accessToken = tokens.filter(function (token) {
     return token.accessToken;
   });
   accessToken = accessToken.length ? accessToken[0] : null;
-
-  let idToken = tokens.filter(token => {
+  var idToken = tokens.filter(function (token) {
     return token.idToken;
   });
   idToken = idToken.length ? idToken[0] : null;
   return {
-    accessToken,
-    idToken
+    accessToken: accessToken,
+    idToken: idToken
   };
 }
 
 function tokensHTML(tokens) {
-  const { idToken, accessToken } = tokens;
-  const claims = idToken.claims;
-  const html = `
-  <table id="claims">
-    <thead>
-      <tr>
-        <th>Claim</th><th>Value</th>
-      </tr>
-    </thead>
-    <tbody>
-    ${
-      Object.keys(claims).map((key) => {
-        return `<tr><td>${key}</td><td>${claims[key]}</td></tr>`;
-      }).join('\n')
-    }
-    </tbody>
-  </table>
-  <hr/>
-  <div class="flex-row">
-    <div class="box">
-      <strong>Access Token</strong><br/>
-      <div id="access-token">${ htmlString(accessToken) }</div>
-    </div>
-    <div class="box">
-      <strong>ID Token</strong><br/>
-      <div id="id-token">${ htmlString(idToken) }</div>
-    </div>
-  </div>
-  `;
+  var idToken = tokens.idToken,
+      accessToken = tokens.accessToken;
+  var claims = idToken.claims;
+  var html = "\n  <table id=\"claims\">\n    <thead>\n      <tr>\n        <th>Claim</th><th>Value</th>\n      </tr>\n    </thead>\n    <tbody>\n    ".concat(Object.keys(claims).map(function (key) {
+    return "<tr><td>".concat(key, "</td><td>").concat(claims[key], "</td></tr>");
+  }).join('\n'), "\n    </tbody>\n  </table>\n  <hr/>\n  <div class=\"flex-row\">\n    <div class=\"box\">\n      <strong>Access Token</strong><br/>\n      <div id=\"access-token\">").concat((0, _util.htmlString)(accessToken), "</div>\n    </div>\n    <div class=\"box\">\n      <strong>ID Token</strong><br/>\n      <div id=\"id-token\">").concat((0, _util.htmlString)(idToken), "</div>\n    </div>\n  </div>\n  ");
   return html;
 }
-
-export { tokensArrayToObject, tokensHTML };

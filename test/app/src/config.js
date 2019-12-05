@@ -1,7 +1,7 @@
 /* global window, URL, localStorage, process */
 import { CALLBACK_PATH, STORAGE_KEY } from './constants';
 const HOST = window.location.host;
-const REDIRECT_URI = `http://${HOST}${CALLBACK_PATH}`;
+const REDIRECT_URI = 'http://' + HOST + CALLBACK_PATH;
 
 function getDefaultConfig() {
   const ISSUER = process.env.ISSUER;
