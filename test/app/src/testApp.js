@@ -39,7 +39,7 @@ function homeLink(app) {
 }
 
 function logoutLink(app) {
-  return "<a id=\"logout\" href=\"".concat(app.originalUrl, "\" onclick=\"logoutAndReload(event)\">Logout (and reload)</a><br/>\n    <a id=\"logout-redirect\" href=\"").concat(app.originalUrl, "\" onclick=\"logoutAndRedirect(event)\">Logout (and redirect here)</a><br/>\n    <a id=\"logout-local\" href=\"").concat(app.originalUrl, "\" onclick=\"logoutLocal(event)\">Logout (local only)</a><br/>\n    ");
+  return "\n  <a id=\"logout\" href=\"".concat(app.originalUrl, "\" onclick=\"logoutAndReload(event)\">Logout (and reload)</a><br/>\n  <a id=\"logout-redirect\" href=\"").concat(app.originalUrl, "\" onclick=\"logoutAndRedirect(event)\">Logout (and redirect here)</a><br/>\n  <a id=\"logout-local\" href=\"").concat(app.originalUrl, "\" onclick=\"logoutLocal(event)\">Logout (local only)</a><br/>\n  ");
 }
 
 var Footer = "\n";
@@ -114,23 +114,45 @@ Object.assign(TestApp.prototype, {
   _onTokenError: function _onTokenError(error) {
     document.getElementById('token-error').innerText = error;
   },
-  bootstrapCallback: async function bootstrapCallback() {
+  bootstrapCallback: function bootstrapCallback() {
     var _this2 = this;
 
-    var content = "\n      <a id=\"handle-callback\" href=\"/\" onclick=\"handleCallback(event)\">Handle callback (Continue Login)</a>\n      <hr/>\n      ".concat(homeLink(this), "\n    ");
-    return this.getSDKInstance().then(function () {
-      return _this2._setContent(content);
-    }).then(function () {
-      return _this2._afterRender('callback');
-    });
+    var content;
+    return regeneratorRuntime.async(function bootstrapCallback$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            content = "\n      <a id=\"handle-callback\" href=\"/\" onclick=\"handleCallback(event)\">Handle callback (Continue Login)</a>\n      <hr/>\n      ".concat(homeLink(this), "\n    ");
+            return _context.abrupt("return", this.getSDKInstance().then(function () {
+              return _this2._setContent(content);
+            }).then(function () {
+              return _this2._afterRender('callback');
+            }));
+
+          case 2:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, null, this);
   },
-  bootstrapHome: async function bootstrapHome() {
+  bootstrapHome: function bootstrapHome() {
     var _this3 = this;
 
-    // Default home page
-    return this.getSDKInstance().then(function () {
-      return _this3.render();
-    });
+    return regeneratorRuntime.async(function bootstrapHome$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            return _context2.abrupt("return", this.getSDKInstance().then(function () {
+              return _this3.render();
+            }));
+
+          case 1:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, null, this);
   },
   render: function render() {
     var _this4 = this;
@@ -162,86 +184,180 @@ Object.assign(TestApp.prototype, {
 
     this._afterRender('with-error');
   },
-  loginDirect: async function loginDirect() {
+  loginDirect: function loginDirect() {
     var _this5 = this;
 
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-    return this.oktaAuth.signIn({
-      username: username,
-      password: password
-    }).then(function (res) {
-      if (res.status === 'SUCCESS') {
-        (0, _config.saveConfigToStorage)(_this5.config);
-        return _this5.oktaAuth.token.getWithRedirect({
-          sessionToken: res.sessionToken,
-          responseType: _this5.config.responseType
-        });
-      }
-    }).catch(function (e) {
-      _this5.renderError(e);
+    var username, password;
+    return regeneratorRuntime.async(function loginDirect$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            username = document.getElementById('username').value;
+            password = document.getElementById('password').value;
+            return _context3.abrupt("return", this.oktaAuth.signIn({
+              username: username,
+              password: password
+            }).then(function (res) {
+              if (res.status === 'SUCCESS') {
+                (0, _config.saveConfigToStorage)(_this5.config);
+                return _this5.oktaAuth.token.getWithRedirect({
+                  sessionToken: res.sessionToken,
+                  responseType: _this5.config.responseType
+                });
+              }
+            }).catch(function (e) {
+              _this5.renderError(e);
 
-      throw e;
-    });
+              throw e;
+            }));
+
+          case 3:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, null, this);
   },
-  loginRedirect: async function loginRedirect(options) {
+  loginRedirect: function loginRedirect(options) {
     var _this6 = this;
 
-    (0, _config.saveConfigToStorage)(this.config);
-    options = Object.assign({}, {
-      responseType: this.config.responseType,
-      scopes: this.config.scopes
-    }, options);
-    return this.oktaAuth.token.getWithRedirect(options).catch(function (e) {
-      _this6.renderError(e);
+    return regeneratorRuntime.async(function loginRedirect$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            (0, _config.saveConfigToStorage)(this.config);
+            options = Object.assign({}, {
+              responseType: this.config.responseType,
+              scopes: this.config.scopes
+            }, options);
+            return _context4.abrupt("return", this.oktaAuth.token.getWithRedirect(options).catch(function (e) {
+              _this6.renderError(e);
 
-      throw e;
-    });
+              throw e;
+            }));
+
+          case 3:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, null, this);
   },
-  loginPopup: async function loginPopup(options) {
+  loginPopup: function loginPopup(options) {
     var _this7 = this;
 
-    options = Object.assign({}, {
-      responseType: this.config.responseType,
-      scopes: this.config.scopes
-    }, options);
-    return this.oktaAuth.token.getWithPopup(options).then(function (tokens) {
-      _this7.saveTokens(tokens);
+    return regeneratorRuntime.async(function loginPopup$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            options = Object.assign({}, {
+              responseType: this.config.responseType,
+              scopes: this.config.scopes
+            }, options);
+            return _context5.abrupt("return", this.oktaAuth.token.getWithPopup(options).then(function (tokens) {
+              _this7.saveTokens(tokens);
 
-      _this7.render();
-    });
+              _this7.render();
+            }));
+
+          case 2:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, null, this);
   },
-  getToken: async function getToken(options) {
+  getToken: function getToken(options) {
     var _this8 = this;
 
-    options = Object.assign({}, {
-      responseType: this.config.responseType,
-      scopes: this.config.scopes
-    }, options);
-    return this.oktaAuth.token.getWithoutPrompt(options).then(function (tokens) {
-      _this8.saveTokens(tokens);
+    return regeneratorRuntime.async(function getToken$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            options = Object.assign({}, {
+              responseType: this.config.responseType,
+              scopes: this.config.scopes
+            }, options);
+            return _context6.abrupt("return", this.oktaAuth.token.getWithoutPrompt(options).then(function (tokens) {
+              _this8.saveTokens(tokens);
 
-      _this8.render();
-    });
+              _this8.render();
+            }));
+
+          case 2:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, null, this);
   },
-  refreshSession: async function refreshSession() {
-    return this.oktaAuth.session.refresh();
+  refreshSession: function refreshSession() {
+    return regeneratorRuntime.async(function refreshSession$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            return _context7.abrupt("return", this.oktaAuth.session.refresh());
+
+          case 1:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, null, this);
   },
-  revokeToken: async function revokeToken() {
-    var accessToken = await this.oktaAuth.tokenManager.get('accessToken');
-    return this.oktaAuth.token.revoke(accessToken).then(function () {
-      document.getElementById('token-msg').innerHTML = 'access token revoked';
-    });
+  revokeToken: function revokeToken() {
+    var accessToken;
+    return regeneratorRuntime.async(function revokeToken$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            _context8.next = 2;
+            return regeneratorRuntime.awrap(this.oktaAuth.tokenManager.get('accessToken'));
+
+          case 2:
+            accessToken = _context8.sent;
+            return _context8.abrupt("return", this.oktaAuth.token.revoke(accessToken).then(function () {
+              document.getElementById('token-msg').innerHTML = 'access token revoked';
+            }));
+
+          case 4:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, null, this);
   },
-  renewToken: async function renewToken() {
+  renewToken: function renewToken() {
     var _this9 = this;
 
-    return this.oktaAuth.tokenManager.renew('idToken').then(function () {
-      _this9.render();
-    });
+    return regeneratorRuntime.async(function renewToken$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            return _context9.abrupt("return", this.oktaAuth.tokenManager.renew('idToken').then(function () {
+              _this9.render();
+            }));
+
+          case 1:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, null, this);
   },
-  logout: async function logout() {
-    return this.oktaAuth.signOut();
+  logout: function logout() {
+    return regeneratorRuntime.async(function logout$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            return _context10.abrupt("return", this.oktaAuth.signOut());
+
+          case 1:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, null, this);
   },
   logoutAndReload: function logoutAndReload() {
     this.logout().catch(function (e) {
@@ -262,28 +378,54 @@ Object.assign(TestApp.prototype, {
     this.clearTokens();
     window.location.reload();
   },
-  handleCallback: async function handleCallback() {
+  handleCallback: function handleCallback() {
     var _this10 = this;
 
-    return this.getTokensFromUrl().catch(function (e) {
-      _this10.renderError(e);
+    return regeneratorRuntime.async(function handleCallback$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            return _context11.abrupt("return", this.getTokensFromUrl().catch(function (e) {
+              _this10.renderError(e);
 
-      throw e;
-    }).then(function (tokens) {
-      _this10.saveTokens(tokens);
+              throw e;
+            }).then(function (tokens) {
+              _this10.saveTokens(tokens);
 
-      return _this10.callbackHTML(tokens);
-    }).then(function (content) {
-      return _this10._setContent(content);
-    }).then(function () {
-      return _this10._afterRender('callback-handled');
-    });
+              return _this10.callbackHTML(tokens);
+            }).then(function (content) {
+              return _this10._setContent(content);
+            }).then(function () {
+              return _this10._afterRender('callback-handled');
+            }));
+
+          case 1:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, null, this);
   },
-  getTokensFromUrl: async function getTokensFromUrl() {
-    // parseFromUrl() Will parse the authorization code from the URL fragment and exchange it for tokens
-    var tokens = await this.oktaAuth.token.parseFromUrl();
-    this.saveTokens(tokens);
-    return tokens;
+  getTokensFromUrl: function getTokensFromUrl() {
+    var tokens;
+    return regeneratorRuntime.async(function getTokensFromUrl$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            _context12.next = 2;
+            return regeneratorRuntime.awrap(this.oktaAuth.token.parseFromUrl());
+
+          case 2:
+            tokens = _context12.sent;
+            this.saveTokens(tokens);
+            return _context12.abrupt("return", tokens);
+
+          case 5:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, null, this);
   },
   saveTokens: function saveTokens(tokens) {
     tokens = Array.isArray(tokens) ? tokens : [tokens];
@@ -300,35 +442,76 @@ Object.assign(TestApp.prototype, {
       this.oktaAuth.tokenManager.add('accessToken', accessToken);
     }
   },
-  getTokens: async function getTokens() {
-    var accessToken = await this.oktaAuth.tokenManager.get('accessToken');
-    var idToken = await this.oktaAuth.tokenManager.get('idToken');
-    return {
-      accessToken: accessToken,
-      idToken: idToken
-    };
+  getTokens: function getTokens() {
+    var accessToken, idToken;
+    return regeneratorRuntime.async(function getTokens$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            _context13.next = 2;
+            return regeneratorRuntime.awrap(this.oktaAuth.tokenManager.get('accessToken'));
+
+          case 2:
+            accessToken = _context13.sent;
+            _context13.next = 5;
+            return regeneratorRuntime.awrap(this.oktaAuth.tokenManager.get('idToken'));
+
+          case 5:
+            idToken = _context13.sent;
+            return _context13.abrupt("return", {
+              accessToken: accessToken,
+              idToken: idToken
+            });
+
+          case 7:
+          case "end":
+            return _context13.stop();
+        }
+      }
+    }, null, this);
   },
   clearTokens: function clearTokens() {
     this.oktaAuth.tokenManager.clear();
   },
-  getUserInfo: async function getUserInfo() {
+  getUserInfo: function getUserInfo() {
     var _this11 = this;
 
-    var _ref = await this.getTokens(),
-        accessToken = _ref.accessToken,
-        idToken = _ref.idToken;
+    var _ref, accessToken, idToken;
 
-    if (accessToken && idToken) {
-      return this.oktaAuth.token.getUserInfo(accessToken).catch(function (error) {
-        _this11.renderError(error);
+    return regeneratorRuntime.async(function getUserInfo$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
+            _context14.next = 2;
+            return regeneratorRuntime.awrap(this.getTokens());
 
-        throw error;
-      }).then(function (user) {
-        document.getElementById('user-info').innerHTML = (0, _util.htmlString)(user);
-      });
-    } else {
-      this.renderError(new Error('Missing tokens'));
-    }
+          case 2:
+            _ref = _context14.sent;
+            accessToken = _ref.accessToken;
+            idToken = _ref.idToken;
+
+            if (!(accessToken && idToken)) {
+              _context14.next = 9;
+              break;
+            }
+
+            return _context14.abrupt("return", this.oktaAuth.token.getUserInfo(accessToken).catch(function (error) {
+              _this11.renderError(error);
+
+              throw error;
+            }).then(function (user) {
+              document.getElementById('user-info').innerHTML = (0, _util.htmlString)(user);
+            }));
+
+          case 9:
+            this.renderError(new Error('Missing tokens'));
+
+          case 10:
+          case "end":
+            return _context14.stop();
+        }
+      }
+    }, null, this);
   },
   configHTML: function configHTML() {
     var config = (0, _util.htmlString)(this.config);
