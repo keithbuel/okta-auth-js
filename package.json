@@ -12,6 +12,11 @@
   "engines": {
     "yarn": "^1.7.0"
   },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
   "scripts": {
     "build": "yarn workspace @okta/okta-auth-js build",
     "clean": "yarn clean-node-modules",
