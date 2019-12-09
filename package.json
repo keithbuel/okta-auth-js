@@ -17,6 +17,10 @@
       "@babel/preset-env"
     ]
   },
+  "dependencies": {
+    "core-js": "^3.1.4",
+    "regenerator-runtime": "^0.13.3"
+  },
   "scripts": {
     "build": "yarn workspace @okta/okta-auth-js build",
     "clean": "yarn clean-node-modules",
