@@ -12,6 +12,10 @@
 
 /* global document, window, Promise, console */
 /* eslint-disable no-console */
+var TextEncodingShim = require('text-encoding-shim');
+var TextEncoder = TextEncodingShim.TextEncoder;
+var TextDecoder = TextEncodingShim.TextDecoder;
+
 import OktaAuth from '@okta/okta-auth-js';
 import { saveConfigToStorage } from './config';
 import { MOUNT_PATH } from './constants';
